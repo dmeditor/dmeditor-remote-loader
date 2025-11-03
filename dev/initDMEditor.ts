@@ -12,17 +12,17 @@ initLanguage("nor-NO");
 registerDefaultWidgets();
 
 //load remote widget asynchronically
-new RemoteLoaderPlugin(dmeditor, [
-  {
-    name: "remote2",
-    url: "http://localhost:3002",
-  },
-])
-  .loadWidgets()
-  .then(() => {
-    console.log("Remote widget loaded");
+const remoteLoader = new RemoteLoaderPlugin(dmeditor, {
+  loadBaseUrl: "http://dmeditor-repo.dev.digimaker.no",
+  repoUrl: "http://dmeditor-repo.dev.digimaker.no/dmeditor.json",
+});
+remoteLoader.init().then(() => {
+  console.log("remote widgets:", remoteLoader.repositoriesPackage);
+  remoteLoader.loadWidgets().then((data) => {
+    console.log("Remote widget loaded", data);
     // renderApp();
   });
+});
 
 setDMEditorConfig({
   general: {

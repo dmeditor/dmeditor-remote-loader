@@ -1,9 +1,13 @@
-export * from './config';
-export * from './loader';
+export * from "./config";
+export * from "./loader";
 
-import { init, loadRemote, registerRemotes } from '@module-federation/enhanced/runtime';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import {
+  init,
+  loadRemote,
+  registerRemotes,
+} from "@module-federation/enhanced/runtime";
+import React from "react";
+import ReactDOM from "react-dom";
 
 interface Repository {
   url: string;
@@ -50,95 +54,101 @@ interface RepositoryPackage {
   engines: Record<string, string>;
 }
 
+interface RepositoryConfig {
+  loadBaseUrl: string;
+  repoUrl: string;
+  mode?: "dev" | "prod";
+}
+
 export class RemoteLoaderPlugin {
   _dmeditor: any;
-  _repoInitPromise: Promise<any>;
+
+  config: RepositoryConfig;
 
   repositories: Array<Repository>;
-  repositoriesPackage: Array<RepositoryPackage & { url: string }> = [];
+  repositoriesPackage: Array<RepositoryPackage> = [];
 
-  constructor(dmeditor: any, repositories: Array<Repository>) {
+  constructor(
+    dmeditor: any,
+    config: RepositoryConfig
+    // repositories: Array<Repository>
+  ) {
     this._dmeditor = dmeditor;
-    this.repositories = repositories;
-
-    this._repoInitPromise = this.initRepositoriesPackage().then((data: any) => {
-      this.repositoriesPackage = data;
-      this.initShared();
-    });
+    this.config = config;
+    // this.repositories = repositories;
   }
 
   initShared() {
-    const remotes = this.repositoriesPackage.map((item) => ({
+    const remotes = this.repositoriesPackage.map((item: RepositoryPackage) => ({
       name: item.name,
-      entry: this._joinPath(item.url, item.entry || 'remoteEntry.js'),
+      entry: this._joinPath(
+        this.config.loadBaseUrl,
+        `${item.name}/remoteEntry.js`
+      ),
     }));
 
     init({
-      name: 'app',
+      name: "app",
       remotes,
       shared: {
         react: {
-          version: '18.2.0',
-          scope: 'default',
+          version: "18.2.0",
+          scope: "default",
           lib: () => React,
           shareConfig: {
             singleton: true,
-            requiredVersion: '^18.2.0',
+            requiredVersion: "^18.2.0",
           },
         },
-        'react-dom': {
-          version: '18.2.0',
-          scope: 'default',
+        "react-dom": {
+          version: "18.2.0",
+          scope: "default",
           lib: () => ReactDOM,
           shareConfig: {
             singleton: true,
-            requiredVersion: '^18.2.0',
+            requiredVersion: "^18.2.0",
           },
         },
         dmeditor: {
-          version: '0.2.0-beta.1',
-          scope: 'default',
+          version: "0.2.3",
+          scope: "default",
           lib: () => this._dmeditor,
           shareConfig: {
             singleton: true,
-            requiredVersion: '^0.2.0-beta.1',
+            requiredVersion: "^0.2.3",
           },
         },
       },
     });
   }
 
-  initRepositoriesPackage() {
-    return Promise.allSettled(
-      this.repositories.map((item) => {
-        return fetch(`${item.url}/dmeditor.json`)
-          .then((response) => response.json())
-          .then((data) => ({
-            ...data,
-            url: item.url,
-          }));
-      })
-    ).then((data) => {
-      return data.map((item: any) => item.value);
-    });
+  async init() {
+    const data = await fetch(this.config.repoUrl).then((response) =>
+      response.json()
+    );
+
+    this.repositoriesPackage = data;
+    this.initShared();
   }
 
-  loadWidgets() {
-    return this._repoInitPromise.then(() => {
-      return this.repositoriesPackage.map((item) => {
-        return loadRemote(`${item.name}/${item.exposeName || 'main'}`).then((main: any) => {
-          main.default();
-        });
-      });
-    });
+  //invoke init before this method
+  async loadWidgets() {
+    const results = [];
+    for (const item of this.repositoriesPackage) {
+      console.log("Loading widget", item.name);
+      const main: any = await loadRemote(`${item.name}/main`);
+      main.default();
+      results.push(main);
+    }
+    return results;
   }
 
   _joinPath(url: string, path: string) {
-    if (url[url.length - 1] === '/') {
+    if (url[url.length - 1] === "/") {
       url = url.slice(0, -1);
     }
-    if (path[0] !== '/') {
-      path = '/' + path;
+    if (path[0] !== "/") {
+      path = "/" + path;
     }
     return url + path;
   }

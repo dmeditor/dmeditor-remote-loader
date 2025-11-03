@@ -27,7 +27,7 @@
     "@emotion/styled": "^11.11.5",
     "@module-federation/enhanced": "^0.1.2",
     "@mui/material": "^5.15.18",
-    "dmeditor": "file:../dmeditor/dist/dmeditor-0.2.0-beta.1.tgz",
+    "dmeditor": "^0.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

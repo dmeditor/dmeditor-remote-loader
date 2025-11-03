@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMEditor } from "dmeditor";
+import { DMEditor, DMEditorRefType } from "dmeditor";
 import { nanoid } from "nanoid";
 import "./initDMEditor";
 import { useState, useRef, useEffect } from "react";
@@ -11,11 +11,11 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import { Store } from "../src/widget-store";
+// import { Store } from "../src/widget-store";
 
 const App = () => {
   const [storeShown, setStoreShown] = useState(true);
-  const editorRef = useRef(null);
+  const editorRef = useRef<DMEditorRefType>(null);
   // const [editor] = useEditor()
   const data = [
     {
@@ -164,7 +164,7 @@ const App = () => {
 
   useEffect(() => {
     // editorRef.current.setDesingerJson(jsonString(data))
-    editorRef.current?.setEditorJson(data);
+    editorRef.current?.setData(data);
     editorRef.current?.setPageSettings([
       { identifier: "cover_image", name: "Cover image", type: "image" },
       { identifier: "summary", name: "Summary", type: "richtext" },
@@ -179,9 +179,6 @@ const App = () => {
       title: "New page",
       theme: "red",
       meta_key: "test key",
-    });
-    editorRef.current?.onSave((data) => {
-      window.alert("Saved");
     });
   }, []);
 
@@ -227,11 +224,14 @@ const App = () => {
         >
           X
         </IconButton>
-        <DialogContent>
-          <Store />
-        </DialogContent>
+        <DialogContent>{/* <Store /> */}</DialogContent>
       </Dialog>
-      <DMEditor ref={editorRef} />
+      <DMEditor
+        ref={editorRef}
+        onSave={(data) => {
+          window.alert("Saved");
+        }}
+      />
     </div>
   );
   // return <DMEditorView data={data} theme="blue" />;
