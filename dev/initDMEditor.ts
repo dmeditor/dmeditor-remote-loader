@@ -4,13 +4,12 @@ import {
   setDMEditorConfig,
 } from "dmeditor";
 import { RemoteLoaderPlugin } from "../src";
-import * as dmeditor from "dmeditor";
 
 initLanguage("nor-NO");
 registerDefaultWidgets();
 
 //load remote widget asynchronically
-const remoteLoader = new RemoteLoaderPlugin(dmeditor, {
+const remoteLoader = new RemoteLoaderPlugin({
   loadBaseUrl: "http://dmeditor-repo.dev.digimaker.no",
   repoUrl: "http://dmeditor-repo.dev.digimaker.no/repo.json",
 });

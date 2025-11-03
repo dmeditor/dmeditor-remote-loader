@@ -1,5 +1,6 @@
 export * from "./config";
 export * from "./loader";
+import * as dmeditor from "dmeditor";
 
 import { init, loadRemote } from "@module-federation/enhanced/runtime";
 import React from "react";
@@ -56,7 +57,7 @@ export class RemoteLoaderPlugin {
 
   repositoriesPackage: Array<RepositoryPackage> = [];
 
-  constructor(dmeditor: any, config: RepositoryConfig) {
+  constructor(config: RepositoryConfig) {
     this._dmeditor = dmeditor;
     this.config = config;
   }
