@@ -1,10 +1,8 @@
-import * as React from "react";
 import {
   initLanguage,
   registerDefaultWidgets,
   setDMEditorConfig,
 } from "dmeditor";
-import { nanoid } from "nanoid";
 import { RemoteLoaderPlugin } from "../src";
 import * as dmeditor from "dmeditor";
 
@@ -14,14 +12,10 @@ registerDefaultWidgets();
 //load remote widget asynchronically
 const remoteLoader = new RemoteLoaderPlugin(dmeditor, {
   loadBaseUrl: "http://dmeditor-repo.dev.digimaker.no",
-  repoUrl: "http://dmeditor-repo.dev.digimaker.no/dmeditor.json",
+  repoUrl: "http://dmeditor-repo.dev.digimaker.no/repo.json",
 });
 remoteLoader.init().then(() => {
-  console.log("remote widgets:", remoteLoader.repositoriesPackage);
-  remoteLoader.loadWidgets().then((data) => {
-    console.log("Remote widget loaded", data);
-    // renderApp();
-  });
+  remoteLoader.loadWidgets();
 });
 
 setDMEditorConfig({

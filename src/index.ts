@@ -1,18 +1,9 @@
 export * from "./config";
 export * from "./loader";
 
-import {
-  init,
-  loadRemote,
-  registerRemotes,
-} from "@module-federation/enhanced/runtime";
+import { init, loadRemote } from "@module-federation/enhanced/runtime";
 import React from "react";
 import ReactDOM from "react-dom";
-
-interface Repository {
-  url: string;
-  name: string; //eg: '@no/company_name'
-}
 
 /**
  * 
@@ -41,8 +32,6 @@ interface RepositoryPackage {
   name: string;
   version: string;
   description?: string;
-  exposeName?: string;
-  entry?: string;
   widgets: Array<{
     id: string;
     name: string;
@@ -65,17 +54,11 @@ export class RemoteLoaderPlugin {
 
   config: RepositoryConfig;
 
-  repositories: Array<Repository>;
   repositoriesPackage: Array<RepositoryPackage> = [];
 
-  constructor(
-    dmeditor: any,
-    config: RepositoryConfig
-    // repositories: Array<Repository>
-  ) {
+  constructor(dmeditor: any, config: RepositoryConfig) {
     this._dmeditor = dmeditor;
     this.config = config;
-    // this.repositories = repositories;
   }
 
   initShared() {
@@ -135,7 +118,7 @@ export class RemoteLoaderPlugin {
   async loadWidgets() {
     const results = [];
     for (const item of this.repositoriesPackage) {
-      console.log("Loading widget", item.name);
+      console.debug("Loading widget", item.name);
       const main: any = await loadRemote(`${item.name}/main`);
       main.default();
       results.push(main);
