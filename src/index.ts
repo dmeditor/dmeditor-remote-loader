@@ -45,8 +45,19 @@ interface RepositoryPackage {
 }
 
 interface RepositoryConfig {
+  /*
+  base url of the remote widgets.
+  The widget entry will be <loadBaseUrl>/<projectName>/remoteEntry.js
+  */
   loadBaseUrl: string;
+  /*
+  url of the repository json file.
+  A json data that contains the list of providers and widgets.
+  */
   repoUrl: string;
+  /*
+  mode of the remote loader.
+  */
   mode?: "dev" | "prod";
 }
 
