@@ -8,7 +8,7 @@ Example of using it:
 
 ```ts
 //load remote widget asynchronically
-const remoteLoader = new RemoteLoaderPlugin(dmeditor, {
+const remoteLoader = new RemoteLoaderPlugin({
   loadBaseUrl: "http://dmeditor-repo.dev.digimaker.no",
   repoUrl: "http://dmeditor-repo.dev.digimaker.no/repo.json",
 });
