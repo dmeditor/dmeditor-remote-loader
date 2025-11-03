@@ -2,6 +2,8 @@
 
 DMEditor remote widget loader, used for loading remote widgets & Widget-store
 
+_Note: this loaded is based on webpack._
+
 Example of using it:
 
 ```ts
